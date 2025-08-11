@@ -23,7 +23,7 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 
 RUN groupadd -f docker && usermod -aG docker jenkins
 
-COPY plugins /usr/share/jenkins/ref/plugins
+RUN mkdir /usr/share/jenkins/ref/plugins
 COPY plugins.txt /usr/share/jenkins/plugins.txt
 COPY init.groovy.d/ /usr/share/jenkins/ref/init.groovy.d/
 
