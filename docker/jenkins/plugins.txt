@@ -1,0 +1,4 @@
+workflow-aggregator
+configuration-as-code
+theme-manager:latest
+dark-theme:latest
