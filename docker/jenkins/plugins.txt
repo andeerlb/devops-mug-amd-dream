@@ -2,3 +2,5 @@ workflow-aggregator
 configuration-as-code
 theme-manager:latest
 dark-theme:latest
+git:latest
+golang:latest
