@@ -32,12 +32,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh """
-                docker build \
-                  -t app:${params.ENV} \
-                  -f app/Dockerfile .
+                docker build -t app:${params.ENV} -f app/Dockerfile .
 
-                docker tag app:${params.ENV} registry-docker-registry.shared.svc.cluster.local:5000/app:${params.ENV}
-                docker push registry-docker-registry.shared.svc.cluster.local:5000/app:${params.ENV}
                 """
             }
         }
@@ -53,7 +49,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh """
-                    helm upgrade --install --set image.repository=registry-docker-registry.shared.svc.cluster.local:5000/app --set image.tag=${params.ENV} go-app-${params.ENV} ./app/helm --namespace ${params.ENV}
+                    helm upgrade --install --set image.repository=app --set image.tag=${params.ENV} \
+                    go-app-${params.ENV} ./app/helm --namespace ${params.ENV}
                 """
             }
         }
@@ -62,7 +59,7 @@ pipeline {
     post {
         always {
             echo "Cleaning up Docker images..."
-            sh "docker rmi -f app:${params.ENV}"
+            // sh "docker rmi -f app:${params.ENV}"
         }
     }
 }
