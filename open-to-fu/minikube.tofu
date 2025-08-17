@@ -8,28 +8,24 @@ resource "null_resource" "minikube" {
     when    = destroy
     command = "${path.module}/data/minikube_destroy.sh"
   }
-
-  depends_on = [null_resource.setup]
 }
 
-resource "kubernetes_namespace" "shared" {
-  provider = kubernetes.after_minikube
+resource "kubernetes_namespace" "infra" {
   metadata {
     annotations = {
-      description = "this namespace should be used for shared applications"
+      description = "this namespace should be used for infra applications"
     }
 
     labels = {
-      mylabel = "shared"
+      mylabel = "infra"
     }
 
-    name = "shared"
+    name = "infra"
   }
   depends_on = [ null_resource.minikube ]
 }
 
 resource "kubernetes_namespace" "dev" {
-  provider = kubernetes.after_minikube
   metadata {
     annotations = {
       description = "development ecossystem"
@@ -45,7 +41,6 @@ resource "kubernetes_namespace" "dev" {
 }
 
 resource "kubernetes_namespace" "prod" {
-  provider = kubernetes.after_minikube
   metadata {
     annotations = {
       description = "release apps"

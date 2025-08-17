@@ -25,6 +25,8 @@ spec:
             runAsGroup: 999
             fsGroup: 999
           env:
+            - name: REGISTRY_URL
+              value: "{{ .Values.registry.url }}"
             - name: JENKINS_ADMIN_ID
               valueFrom:
                 secretKeyRef:

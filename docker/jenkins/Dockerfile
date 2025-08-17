@@ -10,9 +10,7 @@ RUN apt-get update && \
     curl https://baltocdn.com/helm/signing.asc | gpg --dearmor -o /usr/share/keyrings/helm.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" \
         > /etc/apt/sources.list.d/helm-stable-debian.list && \
-    apt-get update && \
-    apt-get install -y docker-ce-cli helm && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get update && apt-get install -y docker-ce-cli helm
 
 ENV GO_VERSION=1.24.6
 RUN curl -fsSL https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz -o /tmp/go.tar.gz && \
@@ -23,11 +21,12 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 
 RUN groupadd -f docker && usermod -aG docker jenkins
 
-RUN mkdir /usr/share/jenkins/ref/plugins
+COPY plugins /usr/share/jenkins/ref/plugins
 COPY plugins.txt /usr/share/jenkins/plugins.txt
 COPY init.groovy.d/ /usr/share/jenkins/ref/init.groovy.d/
 
 RUN chown -R jenkins:jenkins /var/jenkins_home
+# For each .hpi plugin file, create a .jpi symbolic link pointing to it so Jenkins can recognize both extensions.
 RUN chown -R jenkins:jenkins /usr/share/jenkins/ref/plugins && \
     find /usr/share/jenkins/ref/plugins -name "*.hpi" -exec bash -c 'f="{}"; ln -s "$(basename "$f")" "${f%.hpi}.jpi"' \;
 RUN jenkins-plugin-cli \
