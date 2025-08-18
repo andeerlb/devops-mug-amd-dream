@@ -98,7 +98,7 @@ Knowing this, below I'll my extras tools and something else:
 ### minikube
 * run `eval $(minikube docker-env)` to use on my host terminal like a minikube docker
 
-### architecure diagram
+# architecure diagram
 <img src="diagram.jpeg">
 
 ### outputs
